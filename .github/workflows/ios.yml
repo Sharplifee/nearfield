@@ -76,8 +76,12 @@ jobs:
           security unlock-keychain -p ci "$KEYCHAIN"
           security list-keychains -d user -s "$KEYCHAIN" login.keychain
 
-          curl -sfSL https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer -o /tmp/wwdr.cer
-          security import /tmp/wwdr.cer -k "$KEYCHAIN" -T /usr/bin/codesign || true
+          for CA in AppleIncRootCertificate AppleWWDRCAG3 AppleWWDRCAG6 AppleRootCA-G3; do
+            if curl -sfSL "https://www.apple.com/certificateauthority/$CA.cer" -o "/tmp/$CA.cer"; then
+              security import "/tmp/$CA.cer" -k "$KEYCHAIN" -T /usr/bin/codesign 2>&1 | sed "s/^/  $CA: /" || true
+            fi
+          done
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ci "$KEYCHAIN" >/dev/null 2>&1 || true
 
           echo "$P12" | base64 -d > /tmp/dist.p12
           security import /tmp/dist.p12 -k "$KEYCHAIN" -P "$P12_PASSWORD" \

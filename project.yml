@@ -62,6 +62,7 @@ targets:
         NSLocationWhenInUseUsageDescription: Location lets Nearfield range beacons and map where devices were seen.
         NSLocationAlwaysAndWhenInUseUsageDescription: Background location lets Nearfield keep tracking a device while your phone is in your pocket.
         NSMotionUsageDescription: Motion and the barometer let Nearfield estimate how far you have moved and which floor you are on.
+        NSNearbyInteractionUsageDescription: Ultra Wideband gives precise distance and direction to devices that support it.
         NSCameraUsageDescription: The camera improves direction finding and reads labels on devices.
         NSMicrophoneUsageDescription: The microphone is used for ultrasonic ranging between your own devices.
         NFCReaderUsageDescription: NFC lets you tap a device to bind it to its Bluetooth identity.
@@ -70,9 +71,7 @@ targets:
     entitlements:
       path: Nearfield/Nearfield.entitlements
       properties:
-        com.apple.security.application-groups: [group.com.connor.nearfield]
         com.apple.developer.networking.wifi-info: true
-        com.apple.developer.nearby-interaction: true
 
   NearfieldWatch:
     type: application
@@ -98,11 +97,6 @@ targets:
         NSMotionUsageDescription: Wrist motion and the barometer let Nearfield work out direction and floor.
         NSHealthShareUsageDescription: Survey Mode uses a workout session to keep scanning while you walk.
         NSHealthUpdateUsageDescription: Survey Mode records a walking workout while you survey.
-    entitlements:
-      path: NearfieldWatch/NearfieldWatch.entitlements
-      properties:
-        com.apple.security.application-groups: [group.com.connor.nearfield]
-        com.apple.developer.nearby-interaction: true
 
 schemes:
   Nearfield:
