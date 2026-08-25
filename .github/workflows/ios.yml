@@ -99,7 +99,7 @@ jobs:
             -project Nearfield.xcodeproj \
             -scheme Nearfield \
             -configuration Release \
-            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
             -archivePath $RUNNER_TEMP/Nearfield.xcarchive \
             CURRENT_PROJECT_VERSION=${{ steps.bn.outputs.next }} \
             CODE_SIGN_STYLE=Manual \
@@ -107,7 +107,7 @@ jobs:
             OTHER_CODE_SIGN_FLAGS="--keychain $RUNNER_TEMP/build.keychain" \
             -quiet || xcodebuild archive \
             -project Nearfield.xcodeproj -scheme Nearfield -configuration Release \
-            -sdk iphoneos -archivePath $RUNNER_TEMP/Nearfield.xcarchive \
+            -destination 'generic/platform=iOS' -archivePath $RUNNER_TEMP/Nearfield.xcarchive \
             CURRENT_PROJECT_VERSION=${{ steps.bn.outputs.next }} CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} 2>&1 | tail -120 && false
 
