@@ -40,6 +40,7 @@ targets:
     dependencies:
       - target: NearfieldWatch
         embed: true
+        codeSign: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.connor.nearfield
@@ -102,3 +103,11 @@ targets:
       properties:
         com.apple.security.application-groups: [group.com.connor.nearfield]
         com.apple.developer.nearby-interaction: true
+
+schemes:
+  Nearfield:
+    build:
+      targets:
+        Nearfield: [run, test, profile, analyze, archive]
+    archive:
+      config: Release
