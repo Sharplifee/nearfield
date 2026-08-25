@@ -80,7 +80,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.connor.nearfield.watchkitapp
-        PRODUCT_NAME: Nearfield
+        PRODUCT_NAME: NearfieldWatch
         PROVISIONING_PROFILE_SPECIFIER: Nearfield Watch CI
         CODE_SIGN_IDENTITY: "Apple Distribution"
         TARGETED_DEVICE_FAMILY: "4"
