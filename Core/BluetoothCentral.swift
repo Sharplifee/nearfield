@@ -62,8 +62,8 @@ final class BluetoothCentral {
         try await bridge.interrogate(id)
     }
 
-    func write(_ data: Data, to characteristic: CBUUID, on peripheral: UUID, withResponse: Bool) async throws {
-        try await bridge.write(data, characteristic: characteristic, peripheral: peripheral, withResponse: withResponse)
+    func write(_ data: Data, to characteristicUUID: String, on peripheral: UUID, withResponse: Bool) async throws {
+        try await bridge.write(data, characteristicUUID: characteristicUUID, peripheral: peripheral, withResponse: withResponse)
     }
 }
 
@@ -135,9 +135,10 @@ final class CentralBridge: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         peripheral.delegate = self
         let id = peripheral.identifier
         let rssi = RSSI.intValue
-        // Snapshot the dictionary before crossing the isolation boundary.
-        let snapshot = advertisementData
-        Task { await ingest.ingest(identifier: id, rssi: rssi, advertisement: snapshot) }
+        // Decode HERE, on the delegate queue. [String: Any] is not Sendable and cannot cross
+        // an isolation boundary; DecodedAdvertisement is.
+        let decoded = AdvertisementDecoder.decode(advertisementData)
+        Task { [ingest] in await ingest.ingest(identifier: id, rssi: rssi, decoded: decoded) }
     }
 
     // MARK: Interrogation — continuation-based, with a hard deadline.
@@ -165,7 +166,8 @@ final class CentralBridge: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         throw InterrogationError.notImplemented
     }
 
-    func write(_ data: Data, characteristic: CBUUID, peripheral: UUID, withResponse: Bool) async throws {
+    func write(_ data: Data, characteristicUUID: String, peripheral: UUID, withResponse: Bool) async throws {
+        let characteristic = CBUUID(string: characteristicUUID)
         guard let p = tracked[peripheral] else { throw InterrogationError.peripheralGone }
         guard p.state == .connected else { throw InterrogationError.notConnected }
         guard let ch = p.services?.flatMap({ $0.characteristics ?? [] }).first(where: { $0.uuid == characteristic })

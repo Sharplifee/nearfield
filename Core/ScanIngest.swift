@@ -29,8 +29,7 @@ actor ScanIngest {
         self.flushInterval = flushInterval
     }
 
-    func ingest(identifier: UUID, rssi: Int, advertisement: [String: Any], at date: Date = .now) {
-        let decoded = AdvertisementDecoder.decode(advertisement)
+    func ingest(identifier: UUID, rssi: Int, decoded: DecodedAdvertisement, at date: Date = .now) {
         if var existing = pending[identifier] {
             existing.lastRSSI = rssi
             existing.bestRSSI = max(existing.bestRSSI, rssi)

@@ -85,26 +85,29 @@ final class UWBRanging: NSObject {
         isRunning = !sessions.isEmpty
     }
 
-    private func targetID(for session: NISession) -> String? {
-        sessions.first { $0.value === session }?.key
+    private func targetID(forKey key: ObjectIdentifier) -> String? {
+        sessions.first { ObjectIdentifier($0.value) == key }?.key
     }
 }
 
 extension UWBRanging: NISessionDelegate {
 
     nonisolated func session(_ session: NISession, didUpdate nearbyObjects: [NINearbyObject]) {
+        // Extract Sendable scalars before crossing to the main actor.
+        let readings: [(Float?, SIMD3<Float>?)] = nearbyObjects.map { ($0.distance, $0.direction) }
+        let key = ObjectIdentifier(session)
         Task { @MainActor in
-            guard let target = self.targetID(for: session) else { return }
+            guard let target = self.targetID(forKey: key) else { return }
             let pose = self.observerPose()
-            for object in nearbyObjects {
-                if let distance = object.distance {
+            for (distanceValue, directionValue) in readings {
+                if let distance = distanceValue {
                     self.onObservation?(RFObservation(
                         targetID: target, modality: .uwbDistance, at: .now,
                         observerPosition: pose, observerHeading: nil,
                         range: Double(distance),
                         rangeSigma: RFObservation.defaultSigma(.uwbDistance)))
                 }
-                if let direction = object.direction {
+                if let direction = directionValue {
                     self.onObservation?(RFObservation(
                         targetID: target, modality: .uwbDirection, at: .now,
                         observerPosition: pose, observerHeading: nil,
@@ -117,8 +120,9 @@ extension UWBRanging: NISessionDelegate {
     nonisolated func session(_ session: NISession,
                              didGenerateShareableConfigurationData data: Data,
                              for object: NINearbyObject) {
+        let key = ObjectIdentifier(session)
         Task { @MainActor in
-            guard let target = self.targetID(for: session) else { return }
+            guard let target = self.targetID(forKey: key) else { return }
             self.onShareableConfiguration?(target, data)
         }
     }
@@ -131,6 +135,8 @@ extension UWBRanging: NISessionDelegate {
     }
 
     nonisolated func sessionWasSuspended(_ session: NISession) {}
-    nonisolated func sessionSuspensionEnded(_ session: NISession) { session.run(session.configuration!) }
+    nonisolated func sessionSuspensionEnded(_ session: NISession) {
+        if let config = session.configuration { session.run(config) }
+    }
     nonisolated func session(_ session: NISession, didInvalidateWith error: Error) {}
 }
