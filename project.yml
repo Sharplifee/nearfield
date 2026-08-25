@@ -1,0 +1,104 @@
+name: Nearfield
+options:
+  bundleIdPrefix: com.connor
+  deploymentTarget:
+    iOS: "18.0"
+    watchOS: "11.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: XF783932R2
+    CODE_SIGN_STYLE: Manual
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+
+targets:
+  Nearfield:
+    type: application
+    platform: iOS
+    sources:
+      - App
+      - Core
+      - Data
+      - Store
+      - Intents
+      - LiveActivity
+      - UI
+      - Sensors
+      - Fusion
+      - Intelligence
+      - Spatial
+      - Alerts
+      - Shared
+      - Phone
+      - path: Resources
+        optional: true
+    dependencies:
+      - target: NearfieldWatch
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.connor.nearfield
+        PRODUCT_NAME: Nearfield
+        PROVISIONING_PROFILE_SPECIFIER: Nearfield CI
+        CODE_SIGN_IDENTITY: "iPhone Distribution"
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+    info:
+      path: Nearfield/Info.plist
+      properties:
+        CFBundleDisplayName: Nearfield
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        UIBackgroundModes: [bluetooth-central, location, audio, processing]
+        NSSupportsLiveActivities: true
+        NSBluetoothAlwaysUsageDescription: Nearfield scans for nearby Bluetooth devices so it can identify and locate them.
+        NSLocationWhenInUseUsageDescription: Location lets Nearfield range beacons and map where devices were seen.
+        NSLocationAlwaysAndWhenInUseUsageDescription: Background location lets Nearfield keep tracking a device while your phone is in your pocket.
+        NSMotionUsageDescription: Motion and the barometer let Nearfield estimate how far you have moved and which floor you are on.
+        NSCameraUsageDescription: The camera improves direction finding and reads labels on devices.
+        NSMicrophoneUsageDescription: The microphone is used for ultrasonic ranging between your own devices.
+        NFCReaderUsageDescription: NFC lets you tap a device to bind it to its Bluetooth identity.
+        NSHealthShareUsageDescription: Survey Mode uses a workout session to keep scanning while you walk a site.
+        NSHealthUpdateUsageDescription: Survey Mode records a walking workout while you survey.
+    entitlements:
+      path: Nearfield/Nearfield.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.connor.nearfield]
+        com.apple.developer.networking.wifi-info: true
+        com.apple.developer.nearby-interaction: true
+
+  NearfieldWatch:
+    type: application
+    platform: watchOS
+    sources: [Watch, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.connor.nearfield.watchkitapp
+        PRODUCT_NAME: Nearfield
+        PROVISIONING_PROFILE_SPECIFIER: Nearfield Watch CI
+        CODE_SIGN_IDENTITY: "iPhone Distribution"
+        TARGETED_DEVICE_FAMILY: "4"
+    info:
+      path: NearfieldWatch/Info.plist
+      properties:
+        CFBundleDisplayName: Nearfield
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        WKApplication: true
+        WKCompanionAppBundleIdentifier: com.connor.nearfield
+        WKBackgroundModes: [workout-processing]
+        NSBluetoothAlwaysUsageDescription: Nearfield uses the Watch radio as a second sensor while you search.
+        NSMotionUsageDescription: Wrist motion and the barometer let Nearfield work out direction and floor.
+        NSHealthShareUsageDescription: Survey Mode uses a workout session to keep scanning while you walk.
+        NSHealthUpdateUsageDescription: Survey Mode records a walking workout while you survey.
+    entitlements:
+      path: NearfieldWatch/NearfieldWatch.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.connor.nearfield]
+        com.apple.developer.nearby-interaction: true
