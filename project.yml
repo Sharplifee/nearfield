@@ -46,7 +46,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.connor.nearfield
         PRODUCT_NAME: Nearfield
         PROVISIONING_PROFILE_SPECIFIER: Nearfield CI
-        CODE_SIGN_IDENTITY: "iPhone Distribution"
+        CODE_SIGN_IDENTITY: "Apple Distribution"
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         TARGETED_DEVICE_FAMILY: "1,2"
     info:
@@ -82,7 +82,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.connor.nearfield.watchkitapp
         PRODUCT_NAME: Nearfield
         PROVISIONING_PROFILE_SPECIFIER: Nearfield Watch CI
-        CODE_SIGN_IDENTITY: "iPhone Distribution"
+        CODE_SIGN_IDENTITY: "Apple Distribution"
         TARGETED_DEVICE_FAMILY: "4"
     info:
       path: NearfieldWatch/Info.plist
