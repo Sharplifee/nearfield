@@ -147,5 +147,12 @@ jobs:
         run: |
           mkdir -p ~/private_keys
           echo "$ASC_KEY_P8" > ~/private_keys/AuthKey_$ASC_KEY_ID.p8
+          set -o pipefail
           xcrun altool --upload-app -f "$RUNNER_TEMP/export/Nearfield.ipa" -t ios \
-            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID"
+            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" 2>&1 | tee /tmp/upload.log
+          if grep -q "ERROR" /tmp/upload.log; then
+            echo "::error::TestFlight upload rejected — see log above."
+            grep "ERROR" /tmp/upload.log
+            exit 1
+          fi
+          echo "Uploaded build ${{ steps.bn.outputs.next }} to TestFlight."
