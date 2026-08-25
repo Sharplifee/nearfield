@@ -39,9 +39,10 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
         run: |
-          python3 -m pip install --quiet pyjwt cryptography requests
+          python3 -m venv /tmp/venv
+          /tmp/venv/bin/pip install --quiet pyjwt cryptography requests
           echo "$ASC_KEY_P8" > /tmp/asc.p8
-          NEXT=$(python3 <<'PY'
+          NEXT=$(/tmp/venv/bin/python <<'PY'
           import jwt,time,requests,os
           k=open("/tmp/asc.p8").read(); now=int(time.time())
           t=jwt.encode({"iss":os.environ["ASC_ISSUER_ID"],"iat":now,"exp":now+900,
