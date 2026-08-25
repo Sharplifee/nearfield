@@ -95,6 +95,7 @@ jobs:
 
       - name: Archive
         run: |
+          set -o pipefail
           xcodebuild archive \
             -project Nearfield.xcodeproj \
             -scheme Nearfield \
@@ -105,14 +106,11 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} \
             OTHER_CODE_SIGN_FLAGS="--keychain $RUNNER_TEMP/build.keychain" \
-            -quiet || xcodebuild archive \
-            -project Nearfield.xcodeproj -scheme Nearfield -configuration Release \
-            -destination 'generic/platform=iOS' -archivePath $RUNNER_TEMP/Nearfield.xcarchive \
-            CURRENT_PROJECT_VERSION=${{ steps.bn.outputs.next }} CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} 2>&1 | tail -120 && false
+            2>&1 | tee /tmp/archive.log | grep -E "error:|warning: .*deprecat|\*\* ARCHIVE" || true
+          if [ ! -d "$RUNNER_TEMP/Nearfield.xcarchive" ]; then
+            echo "=== ARCHIVE FAILED — last 80 lines ==="; tail -80 /tmp/archive.log; exit 1
+          fi
 
-      # Under manual signing, ExportOptions MUST map each bundle id to the profile NAME,
-      # or exportArchive fails with "requires a provisioning profile" on a signed archive.
       - name: Export IPA
         run: |
           cat > /tmp/ExportOptions.plist <<PLIST
