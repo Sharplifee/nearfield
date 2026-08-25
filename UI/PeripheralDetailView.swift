@@ -100,14 +100,12 @@ struct CharacteristicView: View {
 struct WriteEditor: View {
     let characteristic: Characteristic
     @State private var text = ""
-    @State private var encoding: WriteValueIntent.Encoding = .text
+    @State private var encoding: ValueEncoding = .text
     @State private var withResponse = true
 
     var body: some View {
         Picker("Encoding", selection: $encoding) {
-            Text("Text").tag(WriteValueIntent.Encoding.text)
-            Text("Number").tag(WriteValueIntent.Encoding.number)
-            Text("Hex").tag(WriteValueIntent.Encoding.hex)
+            ForEach(ValueEncoding.allCases) { Text($0.label).tag($0) }
         }
         .pickerStyle(.segmented)
         TextField("Value", text: $text)
