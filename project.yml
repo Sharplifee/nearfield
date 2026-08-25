@@ -25,7 +25,6 @@ targets:
       - Core
       - Data
       - Store
-      - Intents
       - LiveActivity
       - UI
       - Sensors

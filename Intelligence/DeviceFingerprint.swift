@@ -50,7 +50,8 @@ enum DeviceClass: String, CaseIterable, Sendable {
     case vehicle, pointOfSale, industrial, peripheralInput, unknown
 }
 
-struct DeviceFingerprinter: Sendable {
+final class DeviceFingerprinter: @unchecked Sendable {
+    // MLModel is not Sendable but is immutable after load; isolation is by construction.
     static let shared = DeviceFingerprinter()
     private let model: MLModel?
 

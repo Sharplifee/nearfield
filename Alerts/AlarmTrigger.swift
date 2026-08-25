@@ -81,12 +81,13 @@ final class AlarmTrigger {
             #if canImport(AlarmKit)
             // AlarmKit schedules a real alarm. Fire-now is expressed as a fixed date one second out.
             // API surface is iOS 26; verify signatures against the SDK you build with.
-            await scheduleImmediateAlarm(id: rule.id, title: rule.name)
+            if #available(iOS 26.0, *) { await scheduleImmediateAlarm(id: rule.id, title: rule.name) }
             #endif
         }
     }
 
     #if canImport(AlarmKit)
+    @available(iOS 26.0, *)
     private func scheduleImmediateAlarm(id: UUID, title: String) async {
         // Requires the user to have granted AlarmKit authorisation. Request it at rule-creation
         // time, not at fire time — a denied prompt at 3 a.m. is a failed alert.

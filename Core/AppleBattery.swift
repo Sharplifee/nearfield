@@ -17,8 +17,9 @@ import CoreBluetooth
 /// trust. Must be measured on real hardware before this ships as a headline feature.
 enum AppleBattery {
 
-    static let service = CBUUID(string: KnownUUID.batteryService)
-    static let level   = CBUUID(string: KnownUUID.batteryLevel)
+    // CBUUID is not Sendable — compute rather than store, so there is no shared mutable state.
+    static var service: CBUUID { CBUUID(string: KnownUUID.batteryService) }
+    static var level:   CBUUID { CBUUID(string: KnownUUID.batteryLevel) }
 
     /// Only attempt Path B on devices worth the connection cost.
     /// Connecting indiscriminately is what drains the user's battery and gets the app uninstalled.

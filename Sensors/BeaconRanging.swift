@@ -70,22 +70,30 @@ final class BeaconRanging: NSObject, CLLocationManagerDelegate {
         await monitor?.add(CLMonitor.BeaconIdentityCondition(uuid: uuid), identifier: name)
     }
 
-    func locationManager(_ m: CLLocationManager, didRange beacons: [CLBeacon],
-                         satisfying constraint: CLBeaconIdentityConstraint) {
+    nonisolated func locationManager(_ m: CLLocationManager, didRange beacons: [CLBeacon],
+                                     satisfying constraint: CLBeaconIdentityConstraint) {
+        let snapshot = beacons.map { ($0.uuid, $0.major.intValue, $0.minor.intValue, $0.accuracy, $0.rssi, $0.proximity) }
+        Task { @MainActor in self.handleRanged(snapshot) }
+    }
+
+    private func handleRanged(_ beacons: [(UUID, Int, Int, Double, Int, CLProximity)]) {
         let pose = observerPose()
-        for beacon in beacons {
+        for (uuid, major, minor, accuracy, rssi, proximity) in beacons {
             // accuracy < 0 means the estimate is unreliable — Apple's own signal, honour it.
-            guard beacon.accuracy > 0 else { continue }
+            guard accuracy > 0 else { continue }
             onObservation?(RFObservation(
-                targetID: "\(beacon.uuid.uuidString):\(beacon.major):\(beacon.minor)",
+                targetID: "\(uuid.uuidString):\(major):\(minor)",
                 modality: .iBeaconRange, at: .now,
                 observerPosition: pose, observerHeading: nil,
-                range: beacon.accuracy,
+                range: accuracy,
                 // Apple's accuracy is roughly a 1-sigma metre estimate; widen with proximity class.
-                rangeSigma: beacon.proximity == .immediate ? 0.5 : (beacon.proximity == .near ? 1.5 : 4.0),
-                scalar: Double(beacon.rssi)))
+                rangeSigma: proximity == .immediate ? 0.5 : (proximity == .near ? 1.5 : 4.0),
+                scalar: Double(rssi)))
         }
     }
 
-    func locationManagerDidChangeAuthorization(_ m: CLLocationManager) { authorization = m.authorizationStatus }
+    nonisolated func locationManagerDidChangeAuthorization(_ m: CLLocationManager) {
+        let status = m.authorizationStatus
+        Task { @MainActor in self.authorization = status }
+    }
 }
