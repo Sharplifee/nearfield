@@ -109,7 +109,7 @@ final class DeviceLink: NSObject, WCSessionDelegate, @unchecked Sendable {
             return
         }
         if case let .nodeStatus(status) = message.payload { peerStatus = status }
-        message.version = message.version
+        // version already validated above
         onMessage?(message)
     }
 
