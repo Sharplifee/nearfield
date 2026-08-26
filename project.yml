@@ -51,7 +51,7 @@ targets:
     info:
       path: Nearfield/Info.plist
       properties:
-        CFBundleDisplayName: Nearfield
+        CFBundleDisplayName: Nearfield Lab
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         ITSAppUsesNonExemptEncryption: false
@@ -86,7 +86,7 @@ targets:
     info:
       path: NearfieldWatch/Info.plist
       properties:
-        CFBundleDisplayName: Nearfield
+        CFBundleDisplayName: Nearfield Lab
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         WKApplication: true
