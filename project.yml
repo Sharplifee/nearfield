@@ -61,7 +61,7 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
-        UIBackgroundModes: [bluetooth-central, location, audio, processing]
+        UIBackgroundModes: [bluetooth-central, location, audio]
         NSSupportsLiveActivities: true
         NSBluetoothAlwaysUsageDescription: Nearfield scans for nearby Bluetooth devices so it can identify and locate them.
         NSLocationWhenInUseUsageDescription: Location lets Nearfield range beacons and map where devices were seen.
@@ -115,3 +115,7 @@ schemes:
         Nearfield: [run, test, profile, analyze, archive]
     archive:
       config: Release
+    entitlements:
+      path: NearfieldWatch/NearfieldWatch.entitlements
+      properties:
+        com.apple.developer.healthkit: true
