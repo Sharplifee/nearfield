@@ -45,8 +45,10 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.connor.nearfield
         PRODUCT_NAME: Nearfield
         PROVISIONING_PROFILE_SPECIFIER: Nearfield CI
-        CODE_SIGN_IDENTITY: "Apple Distribution"
+        CODE_SIGN_IDENTITY: "iPhone Distribution"
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: "1,2"
     info:
       path: Nearfield/Info.plist
@@ -55,6 +57,10 @@ targets:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         ITSAppUsesNonExemptEncryption: false
+        CFBundleIconName: AppIcon
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UIBackgroundModes: [bluetooth-central, location, audio, processing]
         NSSupportsLiveActivities: true
         NSBluetoothAlwaysUsageDescription: Nearfield scans for nearby Bluetooth devices so it can identify and locate them.
@@ -75,13 +81,17 @@ targets:
   NearfieldWatch:
     type: application
     platform: watchOS
-    sources: [Watch, Shared]
+    sources:
+      - Watch
+      - Shared
+      - WatchResources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.connor.nearfield.watchkitapp
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         PRODUCT_NAME: NearfieldWatch
         PROVISIONING_PROFILE_SPECIFIER: Nearfield Watch CI
-        CODE_SIGN_IDENTITY: "Apple Distribution"
+        CODE_SIGN_IDENTITY: "iPhone Distribution"
         TARGETED_DEVICE_FAMILY: "4"
     info:
       path: NearfieldWatch/Info.plist
@@ -89,6 +99,7 @@ targets:
         CFBundleDisplayName: Nearfield Lab
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleIconName: AppIcon
         WKApplication: true
         WKCompanionAppBundleIdentifier: com.connor.nearfield
         WKBackgroundModes: [workout-processing]
