@@ -107,6 +107,10 @@ targets:
         NSMotionUsageDescription: Wrist motion and the barometer let Nearfield work out direction and floor.
         NSHealthShareUsageDescription: Survey Mode uses a workout session to keep scanning while you walk.
         NSHealthUpdateUsageDescription: Survey Mode records a walking workout while you survey.
+    entitlements:
+      path: NearfieldWatch/NearfieldWatch.entitlements
+      properties:
+        com.apple.developer.healthkit: true
 
 schemes:
   Nearfield:
@@ -115,7 +119,3 @@ schemes:
         Nearfield: [run, test, profile, analyze, archive]
     archive:
       config: Release
-    entitlements:
-      path: NearfieldWatch/NearfieldWatch.entitlements
-      properties:
-        com.apple.developer.healthkit: true
